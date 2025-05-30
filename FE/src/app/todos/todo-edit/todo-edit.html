@@ -1,1 +1,57 @@
-<p>todo-edit works!</p>
+<mat-card class="todo-edit__card">
+  <form class="todo-edit__form">
+    <mat-card-header>
+      <div class="todo-edit__header">
+        <span class="mat-headline-5">Edit todo</span>
+        <a matButton="outlined" [routerLink]="['/todo-list']">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </a>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" value="{{todo.title}}" />
+      </mat-form-field>
+
+      <div class="todo-edit__select-group">
+        <mat-form-field>
+          <mat-label>Status</mat-label>
+          <mat-select value="{{todo.status}}">
+            <mat-option value="Todo">Todo</mat-option>
+            <mat-option value="In progress">In progress</mat-option>
+            <mat-option value="Done">Done</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <mat-select value="{{todo.type}}">
+            <mat-option value="Feature">Feature</mat-option>
+            <mat-option value="Bug">Bug</mat-option>
+            <mat-option value="Story">Story</mat-option>
+            <mat-option value="Other">Other</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field class="full-width todo-edit__description">
+        <mat-label>Description</mat-label>
+        <textarea matInput value="{{todo.description}}"></textarea>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions class="todo-edit__actions">
+      <button matButton="outlined" type="submit">
+        <mat-icon>check</mat-icon>Confirm
+      </button>
+      <a
+        matButton="outlined"
+        type="submit"
+        [routerLink]="['/todo-details/'+ todo.id]"
+      >
+        <mat-icon>close</mat-icon>Cancel
+      </a>
+    </mat-card-actions>
+  </form>
+</mat-card>

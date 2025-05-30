@@ -1,1 +1,39 @@
-<p>todo-details works!</p>
+<mat-card class="todo-details__card">
+  <mat-card-header>
+    <div class="todo-details__header">
+      <div>
+        <span class="mat-headline-5">{{todo.title}}</span>
+        <span class="mat-caption">, created on: {{todo.createdOn | date}}</span>
+      </div>
+      <a matButton="outlined" [routerLink]="['/todo-list']">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </a>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="todo-details__flag-container mat-body-1">
+      <span>Status: {{ todo.status }}</span>
+    </div>
+
+    <div class="todo-details__flag-container mat-body-1">
+      <span>Type: {{ todo.type }}</span>
+    </div>
+
+    <div class="todo-details__description mat-body-1">
+      <p>{{ todo.description }}</p>
+    </div>
+  </mat-card-content>
+  <mat-card-actions class="todo-details__actions">
+    <a
+      matButton="outlined"
+      type="submit"
+      [routerLink]="['/todo-edit/'+todo.id]"
+    >
+      <mat-icon>edit</mat-icon>Edit
+    </a>
+    <button matButton="outlined" type="submit">
+      <mat-icon>delete</mat-icon>Delete
+    </button>
+  </mat-card-actions>
+</mat-card>

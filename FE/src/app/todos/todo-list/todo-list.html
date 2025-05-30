@@ -1,1 +1,36 @@
-<p>todo-list works!</p>
+<div class="todo__list-container">
+  <a class="todo__add-btn" matButton="outlined" [routerLink]="['/todo-create']">
+    <mat-icon>add</mat-icon>
+    Add Todo
+  </a>
+  <mat-card>
+    <mat-nav-list>
+      <mat-list-item *ngFor="let todo of todos">
+        <div class="todo__list-item">
+          <a [routerLink]="['/todo-details', todo.id]">
+            <span
+              class="mat-caption todo__list-flag"
+              [ngClass]="'todo__list-flag--' + todo.status.toLowerCase().replace(' ','')"
+              >{{todo.status}}</span
+            >
+            <span
+              class="mat-caption todo__list-flag"
+              [ngClass]="'todo__list-flag--' + todo.type.toLowerCase()"
+              >{{ todo.type }}</span
+            >
+            <span class="">{{ todo.title }}</span>
+          </a>
+          <div class="todo__list-right">
+            <button class="todo__delete-btn" matButton="outlined">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+            <span class="mat-caption todo__list-date"
+              >{{ todo.createdOn | date }}</span
+            >
+          </div>
+        </div>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-card>
+</div>
