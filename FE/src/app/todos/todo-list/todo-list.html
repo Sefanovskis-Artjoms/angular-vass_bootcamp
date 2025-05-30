@@ -21,7 +21,11 @@
             <span class="">{{ todo.title }}</span>
           </a>
           <div class="todo__list-right">
-            <button class="todo__delete-btn" matButton="outlined">
+            <button
+              class="todo__delete-btn"
+              matButton="outlined"
+              (click)="handleDelete(todo.id)"
+            >
               <mat-icon>delete</mat-icon>
               Delete
             </button>

@@ -1,5 +1,7 @@
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TodoDataService } from '../todo-data-service';
+import { Todo } from '../../models/todo';
 
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
@@ -23,13 +25,23 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './todo-details.scss',
 })
 export class TodoDetails {
-  todo = {
-    id: 1,
-    title: 'Implement new feature',
-    description:
-      'This feature will enhance user experience by providing additional functionality.',
-    type: 'Feature',
-    status: 'Todo',
-    createdOn: new Date('2025-05-26'),
-  };
+  todo!: Todo;
+  constructor(
+    private todoDataService: TodoDataService,
+    activatedRoute: ActivatedRoute,
+    private router: Router
+  ) {
+    const id: number = Number(activatedRoute.snapshot.paramMap.get('id'));
+    const response: Todo | undefined = this.todoDataService.getTodo(id);
+    if (!response) this.router.navigate(['/todo-list']);
+    else {
+      this.todo = response;
+    }
+  }
+
+  handleDelete(): void {
+    if (!this.todo) return;
+    this.todoDataService.deleteTodo(this.todo.id);
+    this.router.navigate(['/todo-list']);
+  }
 }

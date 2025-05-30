@@ -16,12 +16,7 @@
     <mat-card-content>
       <mat-form-field class="full-width">
         <mat-label>Title</mat-label>
-        <input
-          matInput
-          type="text"
-          value="{{todo.title}}"
-          formControlName="title"
-        />
+        <input matInput type="text" formControlName="title" />
         <mat-error *ngIf="title?.invalid && (title?.dirty || title?.touched)">
           <span *ngIf="title?.errors?.['required']">Title is required.</span>
           <span *ngIf="title?.errors?.['minlength']">
@@ -33,7 +28,7 @@
       <div class="todo-edit__select-group">
         <mat-form-field>
           <mat-label>Status</mat-label>
-          <mat-select value="{{todo.status}}" formControlName="status">
+          <mat-select formControlName="status">
             <mat-option value="Todo">Todo</mat-option>
             <mat-option value="In progress">In progress</mat-option>
             <mat-option value="Done">Done</mat-option>
@@ -49,7 +44,7 @@
 
         <mat-form-field>
           <mat-label>Type</mat-label>
-          <mat-select value="{{todo.type}}" formControlName="type">
+          <mat-select formControlName="type">
             <mat-option value="Feature">Feature</mat-option>
             <mat-option value="Bug">Bug</mat-option>
             <mat-option value="Story">Story</mat-option>
@@ -63,11 +58,7 @@
 
       <mat-form-field class="full-width todo-edit__description">
         <mat-label>Description</mat-label>
-        <textarea
-          matInput
-          value="{{todo.description}}"
-          formControlName="description"
-        ></textarea>
+        <textarea matInput formControlName="description"></textarea>
         <mat-error
           *ngIf="description?.invalid && (description?.dirty || description?.touched)"
         >

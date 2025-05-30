@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -7,6 +7,8 @@ import {
   FormBuilder,
   Validators,
 } from '@angular/forms';
+import { TodoDataService } from '../todo-data-service';
+import { Todo } from '../../models/todo';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,17 +32,22 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './todo-edit.scss',
 })
 export class TodoEdit {
-  todo = {
-    id: 1,
-    title: 'Implement new feature',
-    description:
-      'This feature will enhance user experience by providing additional functionality.',
-    type: 'Feature',
-    status: 'Todo',
-    createdOn: new Date('2025-05-26'),
-  };
   editTodoForm: FormGroup;
-  constructor(private formBuilder: FormBuilder) {
+  todo!: Todo;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private todoDataService: TodoDataService
+  ) {
+    const id: number = Number(activatedRoute.snapshot.paramMap.get('id'));
+    const response: Todo | undefined = this.todoDataService.getTodo(id);
+    if (!response) this.router.navigate(['/todo-list']);
+    else {
+      this.todo = response;
+    }
+
     this.editTodoForm = this.formBuilder.group({
       title: [this.todo.title, [Validators.required, Validators.minLength(3)]],
       type: [this.todo.type, Validators.required],
@@ -65,8 +72,12 @@ export class TodoEdit {
   }
 
   onSubmit() {
-    console.log('All good');
+    if (!this.editTodoForm.valid) return;
+    const updatedTodo: Todo = {
+      ...this.todo,
+      ...this.editTodoForm.value,
+    };
+    this.todoDataService.updateTodo(updatedTodo);
+    this.router.navigate(['/todo-details', this.todo.id]);
   }
-
-  
 }

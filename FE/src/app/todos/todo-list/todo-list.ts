@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TodoDataService } from '../todo-data-service';
+import { Todo } from '../../models/todo';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -23,22 +25,12 @@ import { MatChipsModule } from '@angular/material/chips';
   styleUrl: './todo-list.scss',
 })
 export class TodoList {
-  todos = [
-    {
-      id: 1,
-      title: 'Implement new feature',
-      description:
-        'This feature will enhance user experience by providing additional functionality.',
-      type: 'Feature',
-      status: 'Todo',
-      createdOn: new Date('2025-05-26'),
-    },
-    {
-      id: 2,
-      status: 'Done',
-      type: 'Bug',
-      title: 'Fix login issue',
-      createdOn: new Date('2025-05-25'),
-    },
-  ];
+  todos: Todo[] = [];
+  constructor(private todoDataService: TodoDataService) {
+    this.todos = this.todoDataService.getTodos();
+  }
+
+  handleDelete(id: number): void {
+    this.todos = this.todoDataService.deleteTodoReturn(id);
+  }
 }
