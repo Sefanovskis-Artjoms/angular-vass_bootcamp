@@ -38,18 +38,20 @@ export class TodoDetails implements OnInit {
       if (!id) {
         this.router.navigate(['/todo-list']);
       }
-      const response: Todo | undefined = this.todoDataService.getTodo(id);
-      if (!response) {
-        this.router.navigate(['/todo-list']);
-      } else {
-        this.todo = response;
-      }
+      this.todoDataService.getTodo(id).subscribe((todo: Todo | undefined) => {
+        if (!todo) {
+          this.router.navigate(['/todo-list']);
+        } else {
+          this.todo = todo;
+        }
+      });
     });
   }
 
   handleDelete(): void {
     if (!this.todo) return;
-    this.todoDataService.deleteTodo(this.todo.id);
-    this.router.navigate(['/todo-list']);
+    this.todoDataService.deleteTodo(this.todo.id).subscribe(() => {
+      this.router.navigate(['/todo-list']);
+    });
   }
 }

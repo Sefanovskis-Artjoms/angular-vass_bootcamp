@@ -55,12 +55,13 @@ export class TodoEdit implements OnInit {
       if (!id) {
         this.router.navigate(['/todo-list']);
       }
-      const response: Todo | undefined = this.todoDataService.getTodo(id);
-      if (!response) {
-        this.router.navigate(['/todo-list']);
-      } else {
-        this.todo = response;
-      }
+      this.todoDataService.getTodo(id).subscribe((todo: Todo | undefined) => {
+        if (!todo) {
+          this.router.navigate(['/todo-list']);
+        } else {
+          this.todo = todo;
+        }
+      });
 
       this.editTodoForm.patchValue({
         title: this.todo?.title,
@@ -89,7 +90,8 @@ export class TodoEdit implements OnInit {
       ...this.todo,
       ...this.editTodoForm.value,
     };
-    this.todoDataService.updateTodo(updatedTodo);
-    this.router.navigate(['/todo-details', this.todo?.id]);
+    this.todoDataService.updateTodo(updatedTodo).subscribe(() => {
+      this.router.navigate(['/todo-details', this.todo?.id]);
+    });
   }
 }

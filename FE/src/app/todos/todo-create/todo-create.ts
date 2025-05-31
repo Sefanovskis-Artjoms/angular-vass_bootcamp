@@ -67,7 +67,8 @@ export class TodoCreate {
       createdOn: new Date(),
       ...this.createTodoForm.value,
     };
-    this.todoDataService.addTodo(newTodo);
-    this.router.navigate(['/todo-details', newTodo.id]);
+    this.todoDataService.addTodo(newTodo).subscribe(() => {
+      this.router.navigate(['/todo-details', newTodo.id]);
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TodoDataService } from '../todo-data-service';
@@ -24,13 +24,18 @@ import { MatChipsModule } from '@angular/material/chips';
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.scss',
 })
-export class TodoList {
+export class TodoList implements OnInit {
   todos: Todo[] = [];
-  constructor(private todoDataService: TodoDataService) {
-    this.todos = this.todoDataService.getTodos();
+  constructor(private todoDataService: TodoDataService) {}
+  ngOnInit(): void {
+    this.todoDataService.getTodos().subscribe((todos) => {
+      this.todos = todos;
+    });
   }
 
   handleDelete(id: number): void {
-    this.todos = this.todoDataService.deleteTodoReturn(id);
+    this.todoDataService.deleteTodoReturn(id).subscribe((todos: Todo[]) => {
+      this.todos = todos;
+    });
   }
 }

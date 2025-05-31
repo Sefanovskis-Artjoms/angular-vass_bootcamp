@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Todo } from '../models/todo';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -25,28 +26,36 @@ export class TodoDataService {
     },
   ];
 
-  getTodos(): Todo[] {
-    return this.todos;
+  getTodos(): Observable<Todo[]> {
+    return of(this.todos);
   }
 
-  getTodo(id: number): Todo | undefined {
-    return this.todos.find((todo) => todo.id === id);
+  getTodo(id: number): Observable<Todo | undefined> {
+    const todo = this.todos.find((todo) => todo.id === id);
+    return of(todo);
   }
 
-  addTodo(todo: Todo): void {
+  addTodo(todo: Todo): Observable<void> {
     this.todos.push(todo);
+    return of(void 0);
   }
 
-  deleteTodoReturn(id: number): Todo[] {
-    return (this.todos = this.todos.filter((todo) => todo.id !== id));
-  }
-  deleteTodo(id: number): void {
+  deleteTodoReturn(id: number): Observable<Todo[]> {
     this.todos = this.todos.filter((todo) => todo.id !== id);
+    return of(this.todos);
   }
 
-  updateTodo(updatedTodo: Todo): void {
+  deleteTodo(id: number): Observable<void> {
+    this.todos = this.todos.filter((todo) => todo.id !== id);
+    return of(void 0);
+  }
+
+  updateTodo(updatedTodo: Todo): Observable<void> {
     const index = this.todos.findIndex((todo) => todo.id === updatedTodo.id);
-    this.todos[index] = updatedTodo;
+    if (index !== -1) {
+      this.todos[index] = updatedTodo;
+    }
+    return of(void 0);
   }
   constructor() {}
 }
