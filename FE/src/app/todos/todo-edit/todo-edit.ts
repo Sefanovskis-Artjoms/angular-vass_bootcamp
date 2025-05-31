@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -31,9 +31,9 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './todo-edit.html',
   styleUrl: './todo-edit.scss',
 })
-export class TodoEdit {
+export class TodoEdit implements OnInit {
   editTodoForm: FormGroup;
-  todo!: Todo;
+  todo: Todo | undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,21 +41,33 @@ export class TodoEdit {
     private activatedRoute: ActivatedRoute,
     private todoDataService: TodoDataService
   ) {
-    const id: number = Number(activatedRoute.snapshot.paramMap.get('id'));
-    const response: Todo | undefined = this.todoDataService.getTodo(id);
-    if (!response) this.router.navigate(['/todo-list']);
-    else {
-      this.todo = response;
-    }
-
     this.editTodoForm = this.formBuilder.group({
-      title: [this.todo.title, [Validators.required, Validators.minLength(3)]],
-      type: [this.todo.type, Validators.required],
-      status: [this.todo.status, Validators.required],
-      description: [
-        this.todo.description,
-        [Validators.required, Validators.minLength(10)],
-      ],
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      type: ['', Validators.required],
+      status: ['', Validators.required],
+      description: ['', [Validators.required, Validators.minLength(10)]],
+    });
+  }
+
+  ngOnInit() {
+    this.activatedRoute.params.subscribe((params) => {
+      const id: number | undefined = Number(params['id']);
+      if (!id) {
+        this.router.navigate(['/todo-list']);
+      }
+      const response: Todo | undefined = this.todoDataService.getTodo(id);
+      if (!response) {
+        this.router.navigate(['/todo-list']);
+      } else {
+        this.todo = response;
+      }
+
+      this.editTodoForm.patchValue({
+        title: this.todo?.title,
+        type: this.todo?.type,
+        status: this.todo?.status,
+        description: this.todo?.description,
+      });
     });
   }
   get title() {
@@ -78,6 +90,6 @@ export class TodoEdit {
       ...this.editTodoForm.value,
     };
     this.todoDataService.updateTodo(updatedTodo);
-    this.router.navigate(['/todo-details', this.todo.id]);
+    this.router.navigate(['/todo-details', this.todo?.id]);
   }
 }
