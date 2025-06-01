@@ -9,13 +9,13 @@
         <div class="todo__list-item">
           <a [routerLink]="['/todo-details', todo.id]">
             <span
-              class="mat-caption todo__list-flag"
-              [ngClass]="'todo__list-flag--' + todo.status.toLowerCase().replace(' ','')"
+              class="mat-caption todo__todo-flag"
+              [ngClass]="'todo__todo-flag--' + todo.status.toLowerCase().replace(' ','')"
               >{{todo.status}}</span
             >
             <span
-              class="mat-caption todo__list-flag"
-              [ngClass]="'todo__list-flag--' + todo.type.toLowerCase()"
+              class="mat-caption todo__todo-flag"
+              [ngClass]="'todo__todo-flag--' + todo.type.toLowerCase()"
               >{{ todo.type }}</span
             >
             <span class="">{{ todo.title }}</span>

@@ -1,23 +1,7 @@
-.todo-details {
-  &__card {
-    max-width: 600px;
-    margin: 24px auto;
-  }
+@use "todo-module" as *;
+@use "utilities" as *;
 
-  &__header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 8px;
-    margin-bottom: 12px;
-  }
-
-  &__form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
+.todo {
   &__select-group {
     display: flex;
     gap: 12px;
@@ -26,16 +10,8 @@
     }
   }
 
-  &__description textarea {
-    min-height: 156px;
-  }
-
   &__actions {
     display: flex;
     justify-content: space-between;
   }
-}
-
-.full-width {
-  width: 100%;
 }
