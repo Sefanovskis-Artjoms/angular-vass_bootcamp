@@ -8,8 +8,9 @@ import {
 } from '@angular/forms';
 import { Todo } from '../../models/todo';
 import { TodoDataService } from '../todo-data-service';
+import { Subject, takeUntil } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
 
-import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,8 +32,9 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './todo-create.html',
   styleUrl: './todo-create.scss',
 })
-export class TodoCreate {
+export class TodoCreate implements OnDestroy {
   createTodoForm: FormGroup;
+  private destroy$ = new Subject<void>();
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -67,8 +69,16 @@ export class TodoCreate {
       createdOn: new Date(),
       ...this.createTodoForm.value,
     };
-    this.todoDataService.addTodo(newTodo).subscribe(() => {
-      this.router.navigate(['/todo-details', newTodo.id]);
-    });
+    this.todoDataService
+      .addTodo(newTodo)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.router.navigate(['/todo-details', newTodo.id]);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

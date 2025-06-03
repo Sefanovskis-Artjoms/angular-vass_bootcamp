@@ -4,7 +4,7 @@
     Add Todo
   </a>
   <mat-card>
-    <mat-nav-list>
+    <mat-nav-list *ngIf="todos$ | async as todos">
       <mat-list-item *ngFor="let todo of todos">
         <div class="todo__list-item">
           <a [routerLink]="['/todo-details', todo.id]">

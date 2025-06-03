@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { EMPTY, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-todo-edit',
@@ -31,9 +32,10 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './todo-edit.html',
   styleUrl: './todo-edit.scss',
 })
-export class TodoEdit implements OnInit {
+export class TodoEdit implements OnInit, OnDestroy {
   editTodoForm: FormGroup;
   todo: Todo | undefined;
+  destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -50,26 +52,34 @@ export class TodoEdit implements OnInit {
   }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe((params) => {
-      const id: number | undefined = Number(params['id']);
-      if (!id) {
-        this.router.navigate(['/todo-list']);
-      }
-      this.todoDataService.getTodo(id).subscribe((todo: Todo | undefined) => {
-        if (!todo) {
-          this.router.navigate(['/todo-list']);
-        } else {
-          this.todo = todo;
-        }
-      });
+    this.activatedRoute.params
+      .pipe(
+        switchMap((params) => {
+          const id: number = Number(params['id']);
+          if (!id) {
+            this.router.navigate(['/todo-list']);
+            return EMPTY;
+          }
+          return this.todoDataService.getTodo(id);
+        }),
+        tap((todo) => {
+          if (!todo) {
+            this.router.navigate(['/todo-list']);
+          }
+        }),
+        filter((todo) => !!todo),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((todo) => {
+        this.todo = todo;
 
-      this.editTodoForm.patchValue({
-        title: this.todo?.title,
-        type: this.todo?.type,
-        status: this.todo?.status,
-        description: this.todo?.description,
+        this.editTodoForm.patchValue({
+          title: this.todo.title,
+          type: this.todo.type,
+          status: this.todo.status,
+          description: this.todo.description,
+        });
       });
-    });
   }
   get title() {
     return this.editTodoForm.get('title');
@@ -85,13 +95,21 @@ export class TodoEdit implements OnInit {
   }
 
   onSubmit() {
-    if (!this.editTodoForm.valid) return;
+    if (!this.editTodoForm.valid || !this.todo) return;
     const updatedTodo: Todo = {
       ...this.todo,
       ...this.editTodoForm.value,
     };
-    this.todoDataService.updateTodo(updatedTodo).subscribe(() => {
-      this.router.navigate(['/todo-details', this.todo?.id]);
-    });
+    this.todoDataService
+      .updateTodo(updatedTodo)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.router.navigate(['/todo-details', this.todo?.id]);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

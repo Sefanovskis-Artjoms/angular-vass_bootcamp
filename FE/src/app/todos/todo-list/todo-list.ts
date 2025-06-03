@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TodoDataService } from '../todo-data-service';
@@ -9,6 +9,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-todo-list',
@@ -24,18 +25,24 @@ import { MatChipsModule } from '@angular/material/chips';
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.scss',
 })
-export class TodoList implements OnInit {
-  todos: Todo[] = [];
-  constructor(private todoDataService: TodoDataService) {}
-  ngOnInit(): void {
-    this.todoDataService.getTodos().subscribe((todos) => {
-      this.todos = todos;
-    });
+export class TodoList implements OnDestroy {
+  todos$: Observable<Todo[]>;
+  private destroy$ = new Subject<void>();
+  constructor(private todoDataService: TodoDataService) {
+    this.todos$ = this.todoDataService.getTodos();
   }
 
   handleDelete(id: number): void {
-    this.todoDataService.deleteTodoReturn(id).subscribe((todos: Todo[]) => {
-      this.todos = todos;
-    });
+    this.todoDataService
+      .deleteTodoReturn(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.todos$ = this.todoDataService.getTodos();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
