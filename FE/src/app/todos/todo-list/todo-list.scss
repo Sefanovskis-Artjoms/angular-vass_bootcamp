@@ -1,0 +1,71 @@
+.todo {
+  &__list-container {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 24px;
+  }
+
+  &__add-btn {
+    margin-bottom: 12px;
+  }
+
+  &__list-item {
+    display: flex;
+    > *:not(:last-child) {
+      margin-right: 12px;
+    }
+    > *:last-child {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    &:hover .todo__delete-btn {
+      opacity: 1;
+      display: block;
+    }
+  }
+  &__delete-btn {
+    opacity: 0;
+    display: none;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  &__title {
+    text-decoration: none;
+  }
+
+  &__list-flag {
+    border: 1px solid #ccc;
+    padding: 0px 8px;
+    border-radius: 100px;
+    &--inprogress {
+      background-color: #fff176;
+    }
+    &--done {
+      background-color: #81c784;
+    }
+    &--todo {
+      background-color: #ef9a9a;
+    }
+    &--feature {
+      background-color: #90caf9;
+    }
+    &--bug {
+      background-color: #e57373;
+    }
+    &--story {
+      background-color: #ce93d8;
+    }
+    &--other {
+      background-color: #e0e0e0;
+    }
+  }
+}

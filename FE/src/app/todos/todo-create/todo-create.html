@@ -1,1 +1,50 @@
-<p>todo-create works!</p>
+<mat-card class="todo-create__card">
+  <form class="todo-create__form">
+    <mat-card-header>
+      <div class="todo-create__header">
+        <span class="mat-headline-5">Create new todo</span>
+        <a matButton="outlined" [routerLink]="['/todo-list']">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </a>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" />
+      </mat-form-field>
+
+      <div class="todo-create__select-group">
+        <mat-form-field>
+          <mat-label>Status</mat-label>
+          <mat-select>
+            <mat-option value="Todo">Todo</mat-option>
+            <mat-option value="In progress">In progress</mat-option>
+            <mat-option value="Done">Done</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <mat-select>
+            <mat-option value="Feature">Feature</mat-option>
+            <mat-option value="Bug">Bug</mat-option>
+            <mat-option value="Story">Story</mat-option>
+            <mat-option value="Other">Other</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field class="full-width todo-create__description">
+        <mat-label>Description</mat-label>
+        <textarea matInput></textarea>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions class="todo-create__actions">
+      <button matButton="outlined" type="submit">
+        <mat-icon>add</mat-icon>Create
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>
