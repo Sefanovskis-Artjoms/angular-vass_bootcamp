@@ -1,11 +1,7 @@
-<mat-card class="todo-edit__card">
-  <form
-    class="todo-edit__form"
-    [formGroup]="editTodoForm"
-    (ngSubmit)="onSubmit()"
-  >
+<mat-card class="todo__card">
+  <form class="todo__form" [formGroup]="editTodoForm" (ngSubmit)="onSubmit()">
     <mat-card-header>
-      <div class="todo-edit__header">
+      <div class="todo__header">
         <span class="mat-headline-5">Edit todo</span>
         <a matButton="outlined" [routerLink]="['/todo-list']">
           <mat-icon>arrow_back</mat-icon>
@@ -16,12 +12,7 @@
     <mat-card-content>
       <mat-form-field class="full-width">
         <mat-label>Title</mat-label>
-        <input
-          matInput
-          type="text"
-          value="{{todo.title}}"
-          formControlName="title"
-        />
+        <input matInput type="text" formControlName="title" />
         <mat-error *ngIf="title?.invalid && (title?.dirty || title?.touched)">
           <span *ngIf="title?.errors?.['required']">Title is required.</span>
           <span *ngIf="title?.errors?.['minlength']">
@@ -30,10 +21,10 @@
         </mat-error>
       </mat-form-field>
 
-      <div class="todo-edit__select-group">
+      <div class="todo__select-group">
         <mat-form-field>
           <mat-label>Status</mat-label>
-          <mat-select value="{{todo.status}}" formControlName="status">
+          <mat-select formControlName="status">
             <mat-option value="Todo">Todo</mat-option>
             <mat-option value="In progress">In progress</mat-option>
             <mat-option value="Done">Done</mat-option>
@@ -49,7 +40,7 @@
 
         <mat-form-field>
           <mat-label>Type</mat-label>
-          <mat-select value="{{todo.type}}" formControlName="type">
+          <mat-select formControlName="type">
             <mat-option value="Feature">Feature</mat-option>
             <mat-option value="Bug">Bug</mat-option>
             <mat-option value="Story">Story</mat-option>
@@ -61,13 +52,9 @@
         </mat-form-field>
       </div>
 
-      <mat-form-field class="full-width todo-edit__description">
+      <mat-form-field class="full-width todo__description">
         <mat-label>Description</mat-label>
-        <textarea
-          matInput
-          value="{{todo.description}}"
-          formControlName="description"
-        ></textarea>
+        <textarea matInput formControlName="description"></textarea>
         <mat-error
           *ngIf="description?.invalid && (description?.dirty || description?.touched)"
         >
@@ -80,7 +67,7 @@
         </mat-error>
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions class="todo-edit__actions">
+    <mat-card-actions class="todo__actions">
       <button
         matButton="outlined"
         type="submit"
@@ -91,7 +78,7 @@
       <a
         matButton="outlined"
         type="submit"
-        [routerLink]="['/todo-details/'+ todo.id]"
+        [routerLink]="['/todo-details/'+ todo?.id]"
       >
         <mat-icon>close</mat-icon>Cancel
       </a>

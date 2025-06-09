@@ -1,4 +1,4 @@
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -6,8 +6,11 @@ import {
   FormBuilder,
   Validators,
 } from '@angular/forms';
+import { Todo } from '../../models/todo';
+import { TodoDataService } from '../todo-data-service';
+import { Subject, takeUntil } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
 
-import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,9 +32,14 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './todo-create.html',
   styleUrl: './todo-create.scss',
 })
-export class TodoCreate {
+export class TodoCreate implements OnDestroy {
   createTodoForm: FormGroup;
-  constructor(private formBuilder: FormBuilder) {
+  private destroy$ = new Subject<void>();
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private todoDataService: TodoDataService
+  ) {
     this.createTodoForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],
@@ -52,6 +60,25 @@ export class TodoCreate {
     return this.createTodoForm.get('description');
   }
   onSubmit() {
-    console.log('All good');
+    if (!this.createTodoForm.valid) return;
+    const newTodo: Todo = {
+      // ID is temporary solution, later it will be removed
+      // and replaced with a proper ID from the backend
+      // Also because of that, later ID will be marked as optional in the model
+      id: Date.now(),
+      createdOn: new Date(),
+      ...this.createTodoForm.value,
+    };
+    this.todoDataService
+      .addTodo(newTodo)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.router.navigate(['/todo-details', newTodo.id]);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

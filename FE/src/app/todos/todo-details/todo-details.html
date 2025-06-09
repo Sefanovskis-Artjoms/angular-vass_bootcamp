@@ -1,6 +1,6 @@
-<mat-card class="todo-details__card">
+<mat-card *ngIf="todo$ | async as todo" class="todo__card">
   <mat-card-header>
-    <div class="todo-details__header">
+    <div class="todo__header">
       <div>
         <span class="mat-headline-5">{{todo.title}}</span>
         <span class="mat-caption">, created on: {{todo.createdOn | date}}</span>
@@ -12,19 +12,31 @@
     </div>
   </mat-card-header>
   <mat-card-content>
-    <div class="todo-details__flag-container mat-body-1">
-      <span>Status: {{ todo.status }}</span>
+    <div class="todo__flag-container mat-body-1">
+      <span>Status: </span>
+      <span
+        class="todo__todo-flag"
+        *ngIf="todo.status as status"
+        [ngClass]="'todo__todo-flag--' + status.toLowerCase().replace(' ','')"
+        >{{ todo.status }}</span
+      >
     </div>
 
-    <div class="todo-details__flag-container mat-body-1">
-      <span>Type: {{ todo.type }}</span>
+    <div class="todo__flag-container mat-body-1">
+      <span>Type: </span>
+      <span
+        class="todo__todo-flag"
+        *ngIf="todo.type as type"
+        [ngClass]="'todo__todo-flag--' + type.toLowerCase()"
+        >{{ todo.type }}</span
+      >
     </div>
 
-    <div class="todo-details__description mat-body-1">
+    <div class="todo__description mat-body-1">
       <p>{{ todo.description }}</p>
     </div>
   </mat-card-content>
-  <mat-card-actions class="todo-details__actions">
+  <mat-card-actions class="todo__actions">
     <a
       matButton="outlined"
       type="submit"
@@ -32,7 +44,7 @@
     >
       <mat-icon>edit</mat-icon>Edit
     </a>
-    <button matButton="outlined" type="submit">
+    <button matButton="outlined" type="submit" (click)="handleDelete(todo.id)">
       <mat-icon>delete</mat-icon>Delete
     </button>
   </mat-card-actions>
