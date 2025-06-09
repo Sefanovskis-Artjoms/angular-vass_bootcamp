@@ -51,7 +51,7 @@ export class TodoDetails implements OnDestroy {
           this.router.navigate(['/todo-list']);
           return EMPTY;
         }
-        return this.todoDataService.getTodo(id);
+        return this.todoDataService.getTodoById(id);
       }),
       tap((todo) => {
         if (!todo) {

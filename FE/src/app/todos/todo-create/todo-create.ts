@@ -62,18 +62,13 @@ export class TodoCreate implements OnDestroy {
   onSubmit() {
     if (!this.createTodoForm.valid) return;
     const newTodo: Todo = {
-      // ID is temporary solution, later it will be removed
-      // and replaced with a proper ID from the backend
-      // Also because of that, later ID will be marked as optional in the model
-      id: Date.now(),
-      createdOn: new Date(),
       ...this.createTodoForm.value,
     };
     this.todoDataService
       .addTodo(newTodo)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.router.navigate(['/todo-details', newTodo.id]);
+      .subscribe((createdTodo) => {
+        this.router.navigate(['/todo-details', createdTodo.id]);
       });
   }
 
