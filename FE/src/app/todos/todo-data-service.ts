@@ -22,7 +22,25 @@ export class TodoDataService {
       type: 'Bug',
       title: 'Fix login issue',
       description: 'Resolve the issue preventing users from logging in.',
+      createdOn: new Date('2025-05-27'),
+    },
+    {
+      id: 3,
+      status: 'In progress',
+      type: 'Story',
+      title: 'User Profile Page',
+      description:
+        'Implement the user profile page with all necessary details.',
       createdOn: new Date('2025-05-25'),
+    },
+    {
+      id: 4,
+      status: 'Todo',
+      type: 'Other',
+      title: 'Update documentation',
+      description:
+        'Revise the project documentation to reflect recent changes.',
+      createdOn: new Date('2025-05-28'),
     },
   ];
 
@@ -40,11 +58,6 @@ export class TodoDataService {
     return of(void 0);
   }
 
-  deleteTodoReturn(id: number): Observable<Todo[]> {
-    this.todos = this.todos.filter((todo) => todo.id !== id);
-    return of(this.todos);
-  }
-
   deleteTodo(id: number): Observable<void> {
     this.todos = this.todos.filter((todo) => todo.id !== id);
     return of(void 0);
@@ -57,5 +70,4 @@ export class TodoDataService {
     }
     return of(void 0);
   }
-  constructor() {}
 }

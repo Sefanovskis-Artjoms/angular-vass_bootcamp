@@ -9,7 +9,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, startWith, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-todo-list',
@@ -28,21 +28,28 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 export class TodoList implements OnDestroy {
   todos$: Observable<Todo[]>;
   private destroy$ = new Subject<void>();
+  private refreshTodos$ = new Subject<void>();
+
   constructor(private todoDataService: TodoDataService) {
-    this.todos$ = this.todoDataService.getTodos();
+    this.todos$ = this.refreshTodos$.pipe(
+      startWith(undefined),
+      switchMap(() => this.todoDataService.getTodos()),
+      takeUntil(this.destroy$)
+    );
   }
 
   handleDelete(id: number): void {
     this.todoDataService
-      .deleteTodoReturn(id)
+      .deleteTodo(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.todos$ = this.todoDataService.getTodos();
+        this.refreshTodos$.next();
       });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.refreshTodos$.complete();
   }
 }
