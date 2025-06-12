@@ -3,13 +3,24 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TodoDataService } from '../todo-data-service';
 import { Todo } from '../../models/todo';
+import { NotificationService } from '../../shared/notification';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
-import { Observable, startWith, Subject, switchMap, takeUntil } from 'rxjs';
+
+import {
+  catchError,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+  throwError,
+} from 'rxjs';
 
 @Component({
   selector: 'app-todo-list',
@@ -30,10 +41,22 @@ export class TodoList implements OnDestroy {
   private destroy$ = new Subject<void>();
   private refreshTodos$ = new Subject<void>();
 
-  constructor(private todoDataService: TodoDataService) {
+  constructor(
+    private todoDataService: TodoDataService,
+    private notificationService: NotificationService
+  ) {
     this.todos$ = this.refreshTodos$.pipe(
       startWith(undefined),
-      switchMap(() => this.todoDataService.getTodos()),
+      switchMap(() =>
+        this.todoDataService.getTodos().pipe(
+          catchError(() => {
+            this.notificationService.showMessage(
+              'Failed to load todos. Please try again later.'
+            );
+            return of([]);
+          })
+        )
+      ),
       takeUntil(this.destroy$)
     );
   }
@@ -42,8 +65,15 @@ export class TodoList implements OnDestroy {
     this.todoDataService
       .deleteTodo(id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.refreshTodos$.next();
+      .subscribe({
+        next: () => {
+          this.refreshTodos$.next();
+        },
+        error: () => {
+          this.notificationService.showMessage(
+            'Failed to delete todo. Please try again later.'
+          );
+        },
       });
   }
 

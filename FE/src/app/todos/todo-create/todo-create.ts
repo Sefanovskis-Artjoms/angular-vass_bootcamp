@@ -10,6 +10,7 @@ import { Todo } from '../../models/todo';
 import { TodoDataService } from '../todo-data-service';
 import { Subject, takeUntil } from 'rxjs';
 import { Component, OnDestroy } from '@angular/core';
+import { NotificationService } from '../../shared/notification';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -38,7 +39,8 @@ export class TodoCreate implements OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private todoDataService: TodoDataService
+    private todoDataService: TodoDataService,
+    private notificationService: NotificationService
   ) {
     this.createTodoForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
@@ -67,8 +69,15 @@ export class TodoCreate implements OnDestroy {
     this.todoDataService
       .addTodo(newTodo)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((createdTodo) => {
-        this.router.navigate(['/todo-details', createdTodo.id]);
+      .subscribe({
+        next: (createdTodo) => {
+          this.router.navigate(['/todo-details', createdTodo.id]);
+        },
+        error: () => {
+          this.notificationService.showMessage(
+            'Failed to create todo. Please try again later.'
+          );
+        },
       });
   }
 

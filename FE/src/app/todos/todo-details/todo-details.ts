@@ -1,18 +1,19 @@
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TodoDataService } from '../todo-data-service';
+import { NotificationService } from '../../shared/notification';
 import { Todo } from '../../models/todo';
 import { Component, OnDestroy } from '@angular/core';
 import {
+  catchError,
   EMPTY,
   filter,
-  first,
   Observable,
   Subject,
   switchMap,
-  take,
   takeUntil,
   tap,
+  throwError,
 } from 'rxjs';
 
 import { MatCardModule } from '@angular/material/card';
@@ -42,7 +43,8 @@ export class TodoDetails implements OnDestroy {
   constructor(
     private todoDataService: TodoDataService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private notificationService: NotificationService
   ) {
     this.todo$ = this.activatedRoute.params.pipe(
       switchMap((params) => {
@@ -51,7 +53,15 @@ export class TodoDetails implements OnDestroy {
           this.router.navigate(['/todo-list']);
           return EMPTY;
         }
-        return this.todoDataService.getTodoById(id);
+        return this.todoDataService.getTodoById(id).pipe(
+          catchError(() => {
+            this.notificationService.showMessage(
+              'Failed to load todo. Please try again later.'
+            );
+            this.router.navigate(['/todo-list']);
+            return EMPTY;
+          })
+        );
       }),
       tap((todo) => {
         if (!todo) {
@@ -68,8 +78,15 @@ export class TodoDetails implements OnDestroy {
     this.todoDataService
       .deleteTodo(id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.router.navigate(['/todo-list']);
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/todo-list']);
+        },
+        error: () => {
+          this.notificationService.showMessage(
+            'Failed to delete todo. Please try again later.'
+          );
+        },
       });
   }
 

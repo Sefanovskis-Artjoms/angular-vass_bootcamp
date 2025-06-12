@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TodoDataService } from '../todo-data-service';
+import { NotificationService } from '../../shared/notification';
 import { Todo } from '../../models/todo';
 
 import { MatCardModule } from '@angular/material/card';
@@ -15,7 +16,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { EMPTY, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  filter,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-todo-edit',
@@ -41,7 +50,8 @@ export class TodoEdit implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private todoDataService: TodoDataService
+    private todoDataService: TodoDataService,
+    private notificationService: NotificationService
   ) {
     this.editTodoForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
@@ -70,15 +80,23 @@ export class TodoEdit implements OnInit, OnDestroy {
         filter((todo) => !!todo),
         takeUntil(this.destroy$)
       )
-      .subscribe((todo) => {
-        this.todo = todo;
+      .subscribe({
+        next: (todo) => {
+          this.todo = todo;
 
-        this.editTodoForm.patchValue({
-          title: this.todo.title,
-          type: this.todo.type,
-          status: this.todo.status,
-          description: this.todo.description,
-        });
+          this.editTodoForm.patchValue({
+            title: this.todo.title,
+            type: this.todo.type,
+            status: this.todo.status,
+            description: this.todo.description,
+          });
+        },
+        error: () => {
+          this.notificationService.showMessage(
+            'Failed to load todo. Please try again later.'
+          );
+          this.router.navigate(['/todo-list']);
+        },
       });
   }
   get title() {
@@ -103,8 +121,15 @@ export class TodoEdit implements OnInit, OnDestroy {
     this.todoDataService
       .updateTodo(updatedTodo)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.router.navigate(['/todo-details', this.todo?.id]);
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/todo-details', this.todo?.id]);
+        },
+        error: () => {
+          this.notificationService.showMessage(
+            'Failed to update todo. Please try again later.'
+          );
+        },
       });
   }
 
