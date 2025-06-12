@@ -16,10 +16,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import {
-  catchError,
   EMPTY,
   filter,
+  finalize,
   Subject,
   switchMap,
   takeUntil,
@@ -37,6 +39,7 @@ import {
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './todo-edit.html',
   styleUrl: './todo-edit.scss',
@@ -45,6 +48,7 @@ export class TodoEdit implements OnInit, OnDestroy {
   editTodoForm: FormGroup;
   todo: Todo | undefined;
   destroy$ = new Subject<void>();
+  isUpdating = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -118,9 +122,15 @@ export class TodoEdit implements OnInit, OnDestroy {
       ...this.todo,
       ...this.editTodoForm.value,
     };
+    this.isUpdating = true;
     this.todoDataService
       .updateTodo(updatedTodo)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => {
+          this.isUpdating = false;
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: () => {
           this.router.navigate(['/todo-details', this.todo?.id]);

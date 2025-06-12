@@ -10,16 +10,17 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import {
   catchError,
+  finalize,
   Observable,
   of,
   startWith,
   Subject,
   switchMap,
   takeUntil,
-  throwError,
 } from 'rxjs';
 
 @Component({
@@ -32,6 +33,7 @@ import {
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.scss',
@@ -40,6 +42,7 @@ export class TodoList implements OnDestroy {
   todos$: Observable<Todo[]>;
   private destroy$ = new Subject<void>();
   private refreshTodos$ = new Subject<void>();
+  isDeletingIds = new Set<number>();
 
   constructor(
     private todoDataService: TodoDataService,
@@ -62,9 +65,15 @@ export class TodoList implements OnDestroy {
   }
 
   handleDelete(id: number): void {
+    this.isDeletingIds.add(id);
     this.todoDataService
       .deleteTodo(id)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => {
+          this.isDeletingIds.delete(id);
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: () => {
           this.refreshTodos$.next();

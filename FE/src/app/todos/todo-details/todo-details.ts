@@ -8,6 +8,7 @@ import {
   catchError,
   EMPTY,
   filter,
+  finalize,
   Observable,
   Subject,
   switchMap,
@@ -21,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-todo-details',
@@ -32,6 +34,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './todo-details.html',
   styleUrl: './todo-details.scss',
@@ -39,6 +42,7 @@ import { MatSelectModule } from '@angular/material/select';
 export class TodoDetails implements OnDestroy {
   todo$: Observable<Todo>;
   private destroy$ = new Subject<void>();
+  isDeleting = false;
 
   constructor(
     private todoDataService: TodoDataService,
@@ -75,9 +79,15 @@ export class TodoDetails implements OnDestroy {
   }
 
   handleDelete(id: number): void {
+    this.isDeleting = true;
     this.todoDataService
       .deleteTodo(id)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => {
+          this.isDeleting = false;
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: () => {
           this.router.navigate(['/todo-list']);

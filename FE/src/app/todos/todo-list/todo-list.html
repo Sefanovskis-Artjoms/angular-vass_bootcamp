@@ -26,9 +26,20 @@
                 class="todo__delete-btn"
                 matButton="outlined"
                 (click)="handleDelete(todo.id)"
+                [disabled]="isDeletingIds.has(todo.id)"
+                [ngClass]="{ 'todo__delete-btn--deleting': isDeletingIds.has(todo.id) }"
               >
-                <mat-icon>delete</mat-icon>
-                Delete
+                <span class="todo__button-content">
+                  <mat-icon *ngIf="!isDeletingIds.has(todo.id)"
+                    >delete</mat-icon
+                  >
+                  <mat-spinner
+                    *ngIf="isDeletingIds.has(todo.id)"
+                    [diameter]="15"
+                    mode="indeterminate"
+                  ></mat-spinner>
+                  {{ isDeletingIds.has(todo.id) ? 'Deleting' : 'Delete' }}
+                </span>
               </button>
               <span class="mat-caption todo__list-date"
                 >{{ todo.createdOn | date }}</span

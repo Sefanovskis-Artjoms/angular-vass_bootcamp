@@ -38,6 +38,11 @@
     opacity: 0;
     display: none;
     transition: opacity 0.2s ease-in-out;
+
+    &--deleting {
+      opacity: 0.5;
+      display: block;
+    }
   }
 
   &__title {

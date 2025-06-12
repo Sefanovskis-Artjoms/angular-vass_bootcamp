@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Todo } from '../../models/todo';
 import { TodoDataService } from '../todo-data-service';
-import { Subject, takeUntil } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 import { Component, OnDestroy } from '@angular/core';
 import { NotificationService } from '../../shared/notification';
 
@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-todo-create',
@@ -29,6 +30,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './todo-create.html',
   styleUrl: './todo-create.scss',
@@ -36,6 +38,8 @@ import { MatSelectModule } from '@angular/material/select';
 export class TodoCreate implements OnDestroy {
   createTodoForm: FormGroup;
   private destroy$ = new Subject<void>();
+  isSubmitting = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -66,9 +70,15 @@ export class TodoCreate implements OnDestroy {
     const newTodo: Todo = {
       ...this.createTodoForm.value,
     };
+    this.isSubmitting = true;
     this.todoDataService
       .addTodo(newTodo)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => {
+          this.isSubmitting = false;
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (createdTodo) => {
           this.router.navigate(['/todo-details', createdTodo.id]);
