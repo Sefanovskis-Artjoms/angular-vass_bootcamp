@@ -12,7 +12,6 @@ import com.example.todo_backend.model.Todo;
 
 @RestController
 @RequestMapping("api/todos")
-@CrossOrigin(origins = "http://localhost:4200")
 
 public class TodoController {
   private final TodoService todoService;

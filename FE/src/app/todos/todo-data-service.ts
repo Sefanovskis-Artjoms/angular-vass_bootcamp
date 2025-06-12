@@ -8,28 +8,27 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class TodoDataService {
-  private todoApiUrl = environment.apiUrl + '/todos';
   constructor(private http: HttpClient) {}
 
   getTodos(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(this.todoApiUrl);
+    return this.http.get<Todo[]>(environment.todoApiUrl);
   }
 
   getTodoById(id: number): Observable<Todo> {
-    return this.http.get<Todo>(`${this.todoApiUrl}/${id}`);
+    return this.http.get<Todo>(`${environment.todoApiUrl}/${id}`);
   }
 
   addTodo(todo: Todo): Observable<Todo> {
-    return this.http.post<Todo>(this.todoApiUrl, todo);
+    return this.http.post<Todo>(environment.todoApiUrl, todo);
   }
 
   deleteTodo(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.todoApiUrl}/${id}`);
+    return this.http.delete<void>(`${environment.todoApiUrl}/${id}`);
   }
 
   updateTodo(updatedTodo: Todo): Observable<void> {
     return this.http.put<void>(
-      `${this.todoApiUrl}/${updatedTodo.id}`,
+      `${environment.todoApiUrl}/${updatedTodo.id}`,
       updatedTodo
     );
   }
