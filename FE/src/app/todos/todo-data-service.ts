@@ -1,73 +1,35 @@
 import { Injectable } from '@angular/core';
 import { Todo } from '../models/todo';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoDataService {
-  private todos: Todo[] = [
-    {
-      id: 1,
-      title: 'Implement new feature',
-      description:
-        'This feature will enhance user experience by providing additional functionality.',
-      type: 'Feature',
-      status: 'Todo',
-      createdOn: new Date('2025-05-26'),
-    },
-    {
-      id: 2,
-      status: 'Done',
-      type: 'Bug',
-      title: 'Fix login issue',
-      description: 'Resolve the issue preventing users from logging in.',
-      createdOn: new Date('2025-05-27'),
-    },
-    {
-      id: 3,
-      status: 'In progress',
-      type: 'Story',
-      title: 'User Profile Page',
-      description:
-        'Implement the user profile page with all necessary details.',
-      createdOn: new Date('2025-05-25'),
-    },
-    {
-      id: 4,
-      status: 'Todo',
-      type: 'Other',
-      title: 'Update documentation',
-      description:
-        'Revise the project documentation to reflect recent changes.',
-      createdOn: new Date('2025-05-28'),
-    },
-  ];
+  constructor(private http: HttpClient) {}
 
   getTodos(): Observable<Todo[]> {
-    return of(this.todos);
+    return this.http.get<Todo[]>(environment.todoApiUrl);
   }
 
-  getTodo(id: number): Observable<Todo | undefined> {
-    const todo = this.todos.find((todo) => todo.id === id);
-    return of(todo);
+  getTodoById(id: number): Observable<Todo> {
+    return this.http.get<Todo>(`${environment.todoApiUrl}/${id}`);
   }
 
-  addTodo(todo: Todo): Observable<void> {
-    this.todos.push(todo);
-    return of(void 0);
+  addTodo(todo: Todo): Observable<Todo> {
+    return this.http.post<Todo>(environment.todoApiUrl, todo);
   }
 
   deleteTodo(id: number): Observable<void> {
-    this.todos = this.todos.filter((todo) => todo.id !== id);
-    return of(void 0);
+    return this.http.delete<void>(`${environment.todoApiUrl}/${id}`);
   }
 
   updateTodo(updatedTodo: Todo): Observable<void> {
-    const index = this.todos.findIndex((todo) => todo.id === updatedTodo.id);
-    if (index !== -1) {
-      this.todos[index] = updatedTodo;
-    }
-    return of(void 0);
+    return this.http.put<void>(
+      `${environment.todoApiUrl}/${updatedTodo.id}`,
+      updatedTodo
+    );
   }
 }

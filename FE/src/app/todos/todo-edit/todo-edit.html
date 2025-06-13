@@ -71,9 +71,13 @@
       <button
         matButton="outlined"
         type="submit"
-        [disabled]="editTodoForm.invalid"
+        [disabled]="editTodoForm.invalid || isUpdating"
       >
-        <mat-icon>check</mat-icon>Confirm
+        <span class="todo__button-content">
+          <mat-icon *ngIf="!isUpdating">check</mat-icon>
+          <mat-spinner *ngIf="isUpdating" [diameter]="15"></mat-spinner>
+          {{ isUpdating ? 'Updating' : 'Confirm' }}
+        </span>
       </button>
       <a
         matButton="outlined"

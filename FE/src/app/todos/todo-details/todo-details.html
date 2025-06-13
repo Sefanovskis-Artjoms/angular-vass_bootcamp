@@ -44,8 +44,17 @@
     >
       <mat-icon>edit</mat-icon>Edit
     </a>
-    <button matButton="outlined" type="submit" (click)="handleDelete(todo.id)">
-      <mat-icon>delete</mat-icon>Delete
+    <button
+      matButton="outlined"
+      type="submit"
+      (click)="handleDelete(todo.id)"
+      [disabled]="isDeleting"
+    >
+      <span class="todo__button-content">
+        <mat-icon *ngIf="!isDeleting">delete</mat-icon>
+        <mat-spinner *ngIf="isDeleting" [diameter]="15"></mat-spinner>
+        {{ isDeleting ? 'Deleting' : 'Delete' }}
+      </span>
     </button>
   </mat-card-actions>
 </mat-card>

@@ -1,18 +1,20 @@
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TodoDataService } from '../todo-data-service';
+import { NotificationService } from '../../shared/notification';
 import { Todo } from '../../models/todo';
 import { Component, OnDestroy } from '@angular/core';
 import {
+  catchError,
   EMPTY,
   filter,
-  first,
+  finalize,
   Observable,
   Subject,
   switchMap,
-  take,
   takeUntil,
   tap,
+  throwError,
 } from 'rxjs';
 
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-todo-details',
@@ -31,6 +34,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './todo-details.html',
   styleUrl: './todo-details.scss',
@@ -38,11 +42,13 @@ import { MatSelectModule } from '@angular/material/select';
 export class TodoDetails implements OnDestroy {
   todo$: Observable<Todo>;
   private destroy$ = new Subject<void>();
+  isDeleting = false;
 
   constructor(
     private todoDataService: TodoDataService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private notificationService: NotificationService
   ) {
     this.todo$ = this.activatedRoute.params.pipe(
       switchMap((params) => {
@@ -51,7 +57,15 @@ export class TodoDetails implements OnDestroy {
           this.router.navigate(['/todo-list']);
           return EMPTY;
         }
-        return this.todoDataService.getTodo(id);
+        return this.todoDataService.getTodoById(id).pipe(
+          catchError(() => {
+            this.notificationService.showMessage(
+              'Failed to load todo. Please try again later.'
+            );
+            this.router.navigate(['/todo-list']);
+            return EMPTY;
+          })
+        );
       }),
       tap((todo) => {
         if (!todo) {
@@ -65,11 +79,24 @@ export class TodoDetails implements OnDestroy {
   }
 
   handleDelete(id: number): void {
+    this.isDeleting = true;
     this.todoDataService
       .deleteTodo(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.router.navigate(['/todo-list']);
+      .pipe(
+        finalize(() => {
+          this.isDeleting = false;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/todo-list']);
+        },
+        error: () => {
+          this.notificationService.showMessage(
+            'Failed to delete todo. Please try again later.'
+          );
+        },
       });
   }
 

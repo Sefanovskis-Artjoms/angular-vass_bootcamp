@@ -71,9 +71,13 @@
       <button
         matButton="outlined"
         type="submit"
-        [disabled]="createTodoForm.invalid"
+        [disabled]="createTodoForm.invalid || isSubmitting"
       >
-        <mat-icon>add</mat-icon>Create
+        <span class="todo__button-content">
+          <mat-icon *ngIf="!isSubmitting">add</mat-icon>
+          <mat-spinner *ngIf="isSubmitting" [diameter]="15"></mat-spinner>
+          {{ isSubmitting ? 'Creating' : 'Create' }}
+        </span>
       </button>
     </mat-card-actions>
   </form>
