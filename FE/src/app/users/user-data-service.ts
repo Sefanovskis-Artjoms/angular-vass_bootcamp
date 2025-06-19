@@ -26,8 +26,8 @@ export class UserDataService {
     return this.http.delete<void>(`${environment.userApiUrl}/${id}`);
   }
 
-  updateUser(updatedUser: User): Observable<void> {
-    return this.http.put<void>(
+  updateUser(updatedUser: User): Observable<User> {
+    return this.http.put<User>(
       `${environment.userApiUrl}/${updatedUser.id}`,
       updatedUser
     );

@@ -1,6 +1,8 @@
 package com.example.todo_backend.controller;
 
 
+import com.example.todo_backend.dto.UserDto;
+import com.example.todo_backend.dto.UserPasswordUpdateDto;
 import com.example.todo_backend.model.User;
 import com.example.todo_backend.service.UserService;
 
@@ -19,44 +21,37 @@ public class UserController {
     public UserController(UserService userService){this.userService = userService;}
 
     @GetMapping
-    public List<User> getAllUsers(){ return userService.getAllUsers();}
+    public List<UserDto> getAllUsers(){ return userService.getAllUsers();}
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id){
-        return userService
-                .getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
+        UserDto userDto = userService.getUserById(id);
+        return ResponseEntity.ok(userDto);
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<UserDto> createUser(@RequestBody User user){
+        UserDto createdUser = userService.addUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.addUser(user));
+                .body(createdUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser){
-        if (updatedUser.getId() != null && !updatedUser.getId().equals(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return userService.getUserById(id)
-                .map(existing -> {
-                    User updated = userService.updateUser(updatedUser);
-                    return ResponseEntity.ok(updated);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserDto> updateUserDetails(@PathVariable Long id, @RequestBody User updatedUserData){
+        UserDto updatedUser = userService.updateUserDetails(id, updatedUserData);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<Void> updateUserPassword(@PathVariable Long id, @RequestBody UserPasswordUpdateDto userPasswords){
+        userService.updateUserPassword(id, userPasswords.getNewPassword(), userPasswords.getOldPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        if(user.isPresent()){
-            userService.deleteUser(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+        userService.deleteUserById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
