@@ -1,91 +1,80 @@
-<mat-card class="todo__card">
+<div class="todo__card">
+  <a class="btn btn--back" [routerLink]="['/todo-list']">
+    <mat-icon>arrow_back</mat-icon>
+    Back
+  </a>
   <form class="todo__form" [formGroup]="editTodoForm" (ngSubmit)="onSubmit()">
-    <mat-card-header>
-      <div class="todo__header">
-        <span class="mat-headline-5">Edit todo</span>
-        <a matButton="outlined" [routerLink]="['/todo-list']">
-          <mat-icon>arrow_back</mat-icon>
-          Back
-        </a>
-      </div>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-form-field class="full-width">
-        <mat-label>Title</mat-label>
-        <input matInput type="text" formControlName="title" />
-        <mat-error *ngIf="title?.invalid && (title?.dirty || title?.touched)">
-          <span *ngIf="title?.errors?.['required']">Title is required.</span>
-          <span *ngIf="title?.errors?.['minlength']">
-            Title must be at least 3 characters.
-          </span>
-        </mat-error>
-      </mat-form-field>
+    <span class="todo__title mb-md">Edit todo</span>
 
-      <div class="todo__select-group">
-        <mat-form-field>
-          <mat-label>Status</mat-label>
-          <mat-select formControlName="status">
-            <mat-option value="Todo">Todo</mat-option>
-            <mat-option value="In progress">In progress</mat-option>
-            <mat-option value="Done">Done</mat-option>
-          </mat-select>
-          <mat-error
-            *ngIf="status?.invalid && (status?.dirty || status?.touched)"
-          >
-            <span *ngIf="status?.errors?.['required']">
-              Status is required.
-            </span>
-          </mat-error>
-        </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput type="text" formControlName="title" />
+      <mat-error *ngIf="title?.invalid && (title?.dirty || title?.touched)">
+        <span *ngIf="title?.errors?.['required']">Title is required.</span>
+        <span *ngIf="title?.errors?.['minlength']">
+          Title must be at least 3 characters.
+        </span>
+      </mat-error>
+    </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Type</mat-label>
-          <mat-select formControlName="type">
-            <mat-option value="Feature">Feature</mat-option>
-            <mat-option value="Bug">Bug</mat-option>
-            <mat-option value="Story">Story</mat-option>
-            <mat-option value="Other">Other</mat-option>
-          </mat-select>
-          <mat-error *ngIf="type?.invalid && (type?.dirty || type?.touched)">
-            <span *ngIf="type?.errors?.['required']">Type is required.</span>
-          </mat-error>
-        </mat-form-field>
-      </div>
-
-      <mat-form-field class="full-width todo__description">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description"></textarea>
+    <div class="todo__select-group">
+      <mat-form-field>
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="Todo">Todo</mat-option>
+          <mat-option value="In progress">In progress</mat-option>
+          <mat-option value="Done">Done</mat-option>
+        </mat-select>
         <mat-error
-          *ngIf="description?.invalid && (description?.dirty || description?.touched)"
+          *ngIf="status?.invalid && (status?.dirty || status?.touched)"
         >
-          <span *ngIf="description?.errors?.['required']">
-            Description is required.
-          </span>
-          <span *ngIf="description?.errors?.['minlength']">
-            Description must be at least 10 characters.
+          <span *ngIf="status?.errors?.['required']">
+            Status is required.
           </span>
         </mat-error>
       </mat-form-field>
-    </mat-card-content>
-    <mat-card-actions class="todo__actions">
+
+      <mat-form-field>
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="Feature">Feature</mat-option>
+          <mat-option value="Bug">Bug</mat-option>
+          <mat-option value="Story">Story</mat-option>
+          <mat-option value="Other">Other</mat-option>
+        </mat-select>
+        <mat-error *ngIf="type?.invalid && (type?.dirty || type?.touched)">
+          <span *ngIf="type?.errors?.['required']">Type is required.</span>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="full-width todo__description">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error
+        *ngIf="description?.invalid && (description?.dirty || description?.touched)"
+      >
+        <span *ngIf="description?.errors?.['required']">
+          Description is required.
+        </span>
+        <span *ngIf="description?.errors?.['minlength']">
+          Description must be at least 10 characters.
+        </span>
+      </mat-error>
+    </mat-form-field>
+    <div class="todo__actions">
       <button
-        matButton="outlined"
+        class="btn"
         type="submit"
         [disabled]="editTodoForm.invalid || isUpdating"
       >
-        <span class="todo__button-content">
-          <mat-icon *ngIf="!isUpdating">check</mat-icon>
-          <mat-spinner *ngIf="isUpdating" [diameter]="15"></mat-spinner>
-          {{ isUpdating ? 'Updating' : 'Confirm' }}
-        </span>
+        <mat-icon *ngIf="!isUpdating">check</mat-icon>
+        <mat-spinner *ngIf="isUpdating" [diameter]="15"></mat-spinner>
+        {{ isUpdating ? 'Updating' : 'Confirm' }}
       </button>
-      <a
-        matButton="outlined"
-        type="submit"
-        [routerLink]="['/todo-details/'+ todo?.id]"
-      >
+      <a class="btn" type="submit" [routerLink]="['/todo-details/'+ todo?.id]">
         <mat-icon>close</mat-icon>Cancel
       </a>
-    </mat-card-actions>
+    </div>
   </form>
-</mat-card>
+</div>

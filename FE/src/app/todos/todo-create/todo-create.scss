@@ -1,6 +1,10 @@
 @use "todo-module" as *;
 @use "utilities" as *;
 
+.btn--submit {
+  margin: 0 auto;
+}
+
 .todo {
   &__select-group {
     display: flex;
@@ -8,12 +12,5 @@
     & > * {
       flex: 1;
     }
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: center;
-    margin-top: -18px;
-    margin-bottom: 12px;
   }
 }

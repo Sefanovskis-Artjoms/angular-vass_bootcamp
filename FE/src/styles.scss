@@ -1,36 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
 @use "@angular/material" as mat;
 @use "variables";
-
-@include mat.core();
-
-@include mat.all-component-typographies();
-
-@import "@angular/material/prebuilt-themes/rose-red.css";
+@use "components";
 
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Work Sans", sans-serif;
+  font: var(--mat-sys-body-medium);
+  background-color: var(--mat-sys-background);
 }
 
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+html {
+  color-scheme: light;
+  @include mat.theme(
+    (
+      color: mat.$rose-palette,
+      typography: Work Sans,
+    )
+  );
 }
 
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
+// fff0e6
+// e8dff2
+// f2eef6
+// ede9f3
+// f5e9f7

@@ -1,1 +1,19 @@
-$color-test: red;
+:root {
+  --color-black: #130009;
+  --color-todo-status-todo: #ef9a9a;
+  --color-todo-status-inprogress: #fff176;
+  --color-todo-status-done: #81c784;
+  --color-todo-type-feature: #90caf9;
+  --color-todo-type-bug: #e57373;
+  --color-todo-type-story: #ce93d8;
+  --color-todo-type-other: #e0e0e0;
+
+  --border-regular: 3px solid var(--color-black);
+
+  --border-shadow-regular: 3px 3px 0px 0px var(--color-black);
+  --border-shadow-regular--pressed: 3px 3px 0px 0px var(--color-black) inset;
+
+  --border-shadow-large: 5px 5px 0px 0px var(--color-black);
+
+  --mat-form-field-filled-focus-active-indicator-height: 4px;
+}

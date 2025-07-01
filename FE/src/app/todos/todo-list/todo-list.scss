@@ -1,4 +1,5 @@
 @use "todo-module";
+@use "@angular/material" as mat;
 
 .todo {
   &__list-container {
@@ -8,44 +9,92 @@
   }
 
   &__add-btn {
-    margin-bottom: 12px;
+    text-transform: uppercase;
+    font: var(--mat-sys-body-large);
+    font-weight: 700;
+    margin-bottom: 21px; //gap 24px -3px that takes away the shadows on list items
+    width: 100%;
+    min-height: 48px;
+    border-radius: 0;
+    border: 3px dashed var(--mat-sys-primary) !important;
+    mat-icon {
+      font-weight: 700;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
   &__list-item {
     display: flex;
-    > *:not(:last-child) {
-      margin-right: 12px;
-    }
-    > *:last-child {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    &:hover .todo__delete-btn {
+    min-height: 48px;
+    border: var(--border-regular);
+    box-shadow: var(--border-shadow-large);
+    overflow: hidden;
+    font: var(--mat-sys-body-medium);
+    font-weight: 500;
+    &:hover .todo__delete-btn,
+    .todo__delete-btn--deleting {
       opacity: 1;
-      display: block;
+      margin-right: 0;
+      pointer-events: auto;
     }
   }
+
   &__delete-btn {
-    opacity: 0;
-    display: none;
-    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+    border: none;
+    border-left: var(--border-regular);
+    transition: all 0.2s linear;
+    // Other solutions to make slide out reveal button that I tried were broken in some way
+    // hardcoded value is not the best solution,
+    // if needed then it can be calculated with JS, but it works for now
+    margin-right: -115px;
+  }
 
-    &--deleting {
-      opacity: 0.5;
-      display: block;
+  &__list-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex: 1;
+    > * {
+      display: flex;
+      align-items: center;
+    }
+    &:hover {
+      text-decoration: underline;
     }
   }
 
-  &__title {
-    text-decoration: none;
+  &__todo-flag {
+    height: 100%;
+    min-width: max-content;
+    padding: 0 18px;
+    text-transform: uppercase;
+  }
+
+  &__list-item-title {
+    height: 100%;
+    width: 100%;
+    padding: 0 12px;
+    font: var(--mat-sys-title-medium);
+    font-weight: 500;
+  }
+
+  &__list-date {
+    min-width: max-content;
+    padding: 0 12px;
+  }
+
+  &__not-found {
+    font-size: var(--mat-sys-body-large-size) !important;
+    color: var(--mat-sys-on-surface);
+    margin-top: 24px;
   }
 }

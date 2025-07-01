@@ -1,0 +1,43 @@
+@use "@angular/material" as mat;
+
+.btn {
+  width: max-content;
+  padding: 6px 14px 6px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: var(--mat-sys-body-medium);
+  border-radius: 0;
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  border: var(--border-regular);
+  box-shadow: var(--border-shadow-regular);
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    box-shadow: none;
+    opacity: 0.95;
+  }
+
+  &:active {
+    box-shadow: var(--border-shadow-regular--pressed);
+    opacity: 0.9;
+  }
+  &:disabled {
+    box-shadow: none;
+    opacity: 0.5 !important;
+    pointer-events: none;
+  }
+
+  mat-icon {
+    font-weight: 500;
+  }
+  @include mat.progress-spinner-overrides(
+    (
+      active-indicator-color: var(--mat-sys-on-primary),
+    )
+  );
+}
