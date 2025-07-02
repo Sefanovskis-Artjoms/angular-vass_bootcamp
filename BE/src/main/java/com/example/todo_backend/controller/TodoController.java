@@ -27,41 +27,28 @@ public class TodoController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Todo> getTodoById(@PathVariable Long id){
-    return todoService
-            .getTodoById(id)
-            .map(ResponseEntity::ok).
-            orElse(ResponseEntity.notFound().build());
+      Todo todo = todoService.getTodoById(id);
+      return ResponseEntity.ok(todo);
   }
 
   @PostMapping
   public ResponseEntity<Todo> createTodo(@RequestBody Todo todo){
-    return ResponseEntity
-            .status(HttpStatus.CREATED).
-            body(todoService.addTodo(todo));
+      Todo createdTodo = todoService.addTodo(todo);
+      return ResponseEntity
+              .status(HttpStatus.CREATED)
+              .body(createdTodo);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo updatedTodo){
-    if (updatedTodo.getId() != null && !updatedTodo.getId().equals(id)) {
-      return ResponseEntity.badRequest().build();
-    }
-    return todoService.getTodoById(id)
-        .map(existing -> {
-          Todo updated = todoService.updateTodo(updatedTodo);
-          return ResponseEntity.ok(updated);
-        })
-        .orElse(ResponseEntity.notFound().build());
+  public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo updatedTodoData){
+      Todo updatedTodo = todoService.updateTodo(id, updatedTodoData);
+      return ResponseEntity.ok(updatedTodo);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-      Optional<Todo> todo = todoService.getTodoById(id);
-      if(todo.isPresent()){
-          todoService.deleteTodo(id);
-          return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-      }else{
-          return ResponseEntity.notFound().build();
-      }
+      todoService.deleteTodo(id);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
 }
