@@ -3,7 +3,7 @@
 
 .todo {
   &__date {
-    font: var(--mat-sys-body-medium);
+    font-size: var(--mat-sys-body-medium-size);
     color: var(--mat-sys-on-surface-variant);
     width: fit-content;
     margin: 0 auto;
@@ -11,7 +11,7 @@
 
   &__card-content {
     display: flex;
-    gap: 24px;
+    gap: 2.4rem;
     & > *:first-child {
       max-width: 30%;
     }
@@ -21,7 +21,7 @@
   }
 
   &__flag-container {
-    font: var(--mat-sys-body-large);
+    font-size: var(--mat-sys-body-large-size);
   }
 
   &__todo-flag {

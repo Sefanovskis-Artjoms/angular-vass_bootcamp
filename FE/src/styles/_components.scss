@@ -2,14 +2,14 @@
 
 .btn {
   width: max-content;
-  padding: 6px 14px 6px 12px;
+  padding: 0.6rem 1.4rem 0.6rem 1.2rem;
   display: flex;
-  gap: 8px;
+  gap: 0.8rem;
   align-items: center;
   text-transform: uppercase;
   text-decoration: none;
   font-weight: 600;
-  font-size: var(--mat-sys-body-medium);
+  font-size: var(--mat-sys-body-medium-size);
   border-radius: 0;
   background-color: var(--mat-sys-primary);
   color: var(--mat-sys-on-primary);
@@ -33,8 +33,11 @@
   }
 
   mat-icon {
-    font-weight: 500;
+    font-size: 2.4rem;
+    width: 2.4rem;
+    height: 2.4rem;
   }
+
   @include mat.progress-spinner-overrides(
     (
       active-indicator-color: var(--mat-sys-on-primary),

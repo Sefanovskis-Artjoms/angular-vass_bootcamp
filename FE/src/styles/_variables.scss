@@ -8,12 +8,16 @@
   --color-todo-type-story: #ce93d8;
   --color-todo-type-other: #e0e0e0;
 
-  --border-regular: 3px solid var(--color-black);
+  --border-regular: 0.3rem solid var(--color-black);
 
-  --border-shadow-regular: 3px 3px 0px 0px var(--color-black);
-  --border-shadow-regular--pressed: 3px 3px 0px 0px var(--color-black) inset;
+  --border-shadow-regular: 0.3rem 0.3rem 0rem 0rem var(--color-black);
+  --border-shadow-regular--pressed: 0.3rem 0.3rem 0rem 0rem var(--color-black)
+    inset;
 
-  --border-shadow-large: 5px 5px 0px 0px var(--color-black);
+  --border-shadow-large: 0.5rem 0.5rem 0rem 0rem var(--color-black);
 
-  --mat-form-field-filled-focus-active-indicator-height: 4px;
+  --mat-form-field-filled-focus-active-indicator-height: 0.4rem;
+  --mat-form-field-container-height: 5.6rem;
+  --mat-form-field-filled-with-label-container-padding-top: 2.4rem;
+  --mat-form-field-filled-with-label-container-padding-bottom: 0.8rem;
 }

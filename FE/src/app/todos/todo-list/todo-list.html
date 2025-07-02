@@ -9,12 +9,12 @@
       <li *ngFor="let todo of todos" class="todo__list-item">
         <a [routerLink]="['/todo-details', todo.id]" class="todo__list-link">
           <span
-            class="todo__todo-flag"
+            class="todo__todo-flag todo__todo-flag--status"
             [ngClass]="'todo__todo-flag--' + todo.status.toLowerCase().replace(' ','')"
             >{{todo.status}}</span
           >
           <span
-            class="todo__todo-flag"
+            class="todo__todo-flag todo__todo-flag--type"
             [ngClass]="'todo__todo-flag--' + todo.type.toLowerCase()"
             >{{ todo.type }}</span
           >

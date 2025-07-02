@@ -1,4 +1,5 @@
 @use "utilities";
+@use "mixins";
 
 .btn--back {
   margin-left: auto;
@@ -12,13 +13,17 @@
   border-radius: 0;
   border: var(--border-regular);
   box-shadow: var(--border-shadow-regular);
+  padding: 0 1.6rem;
+  .mat-mdc-select-value {
+    padding-bottom: 0.2rem;
+  }
 }
 
 .todo {
   &__card {
-    max-width: 600px;
-    margin: 48px auto;
-    padding: 12px;
+    max-width: 60rem;
+    margin: 4.8rem auto;
+    padding: 1.2rem;
     color: var(--mat-sys-on-primary-container);
     background-color: var(--mat-sys-primary-container);
     border: var(--border-regular);
@@ -26,7 +31,7 @@
   }
 
   &__title {
-    font: var(--mat-sys-headline-medium);
+    font-size: var(--mat-sys-headline-medium-size);
     font-weight: 500;
     margin: 0 auto;
     width: fit-content;
@@ -35,11 +40,11 @@
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1.6rem;
   }
 
   &__description textarea {
-    min-height: 156px;
+    min-height: 15.6rem;
   }
 
   &__todo-flag {
