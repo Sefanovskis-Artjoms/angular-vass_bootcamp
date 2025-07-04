@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -53,20 +53,23 @@ import { UsersViewModel } from '../../models/user-view-model';
   styleUrl: './todo-edit.scss',
 })
 export class TodoEdit implements OnInit, OnDestroy {
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private todoDataService = inject(TodoDataService);
+  private userDataService = inject(UserDataService);
+  private notificationService = inject(NotificationService);
+
   editTodoForm: FormGroup;
   todo: Todo | undefined;
   destroy$ = new Subject<void>();
   isUpdating = false;
   userVm$: Observable<UsersViewModel>;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private todoDataService: TodoDataService,
-    private userDataService: UserDataService,
-    private notificationService: NotificationService
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.editTodoForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],

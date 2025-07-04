@@ -5,7 +5,7 @@ import { UserDataService } from '../../users/user-data-service';
 import { NotificationService } from '../../shared/notification';
 import { Todo } from '../../models/todo';
 import { User } from '../../models/user';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import {
   catchError,
   EMPTY,
@@ -42,18 +42,21 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './todo-details.scss',
 })
 export class TodoDetails implements OnDestroy {
+  private todoDataService = inject(TodoDataService);
+  private userDataService = inject(UserDataService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private notificationService = inject(NotificationService);
+
   todo$: Observable<Todo>;
   user$: Observable<User | null>;
   private destroy$ = new Subject<void>();
   isDeleting = false;
 
-  constructor(
-    private todoDataService: TodoDataService,
-    private userDataService: UserDataService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private notificationService: NotificationService
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.todo$ = this.activatedRoute.params.pipe(
       switchMap((params) => {
         const id: number | undefined = Number(params['id']);

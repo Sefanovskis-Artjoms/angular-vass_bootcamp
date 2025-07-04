@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TodoDataService } from '../todo-data-service';
@@ -39,15 +39,18 @@ import {
   styleUrl: './todo-list.scss',
 })
 export class TodoList implements OnDestroy {
+  private todoDataService = inject(TodoDataService);
+  private notificationService = inject(NotificationService);
+
   todos$: Observable<Todo[]>;
   private destroy$ = new Subject<void>();
   private refreshTodos$ = new Subject<void>();
   isDeletingIds = new Set<number>();
 
-  constructor(
-    private todoDataService: TodoDataService,
-    private notificationService: NotificationService
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.todos$ = this.refreshTodos$.pipe(
       startWith(undefined),
       switchMap(() =>

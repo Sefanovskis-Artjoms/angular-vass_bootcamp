@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { User } from '../models/user';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
@@ -8,7 +8,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class UserDataService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(environment.userApiUrl);

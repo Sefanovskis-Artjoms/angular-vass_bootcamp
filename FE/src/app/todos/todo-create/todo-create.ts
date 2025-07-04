@@ -19,7 +19,7 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { NotificationService } from '../../shared/notification';
 
 import { MatCardModule } from '@angular/material/card';
@@ -47,18 +47,21 @@ import { UsersViewModel } from '../../models/user-view-model';
   styleUrl: './todo-create.scss',
 })
 export class TodoCreate implements OnDestroy {
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private todoDataService = inject(TodoDataService);
+  private userDataService = inject(UserDataService);
+  private notificationService = inject(NotificationService);
+
   createTodoForm: FormGroup;
   private destroy$ = new Subject<void>();
   isSubmitting = false;
   userVm$: Observable<UsersViewModel>;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private todoDataService: TodoDataService,
-    private userDataService: UserDataService,
-    private notificationService: NotificationService
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.createTodoForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],
