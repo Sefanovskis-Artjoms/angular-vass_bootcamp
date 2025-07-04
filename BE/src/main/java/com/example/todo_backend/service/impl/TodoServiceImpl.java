@@ -4,19 +4,21 @@ import com.example.todo_backend.exception.InvalidInputException;
 import com.example.todo_backend.exception.ResourceNotFoundException;
 import com.example.todo_backend.model.Todo;
 import com.example.todo_backend.repository.TodoRepository;
+import com.example.todo_backend.repository.UserRepository;
 import com.example.todo_backend.service.TodoService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TodoServiceImpl implements TodoService {
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
-    public TodoServiceImpl(TodoRepository todoRepository){
+    public TodoServiceImpl(TodoRepository todoRepository,UserRepository userRepository){
         this.todoRepository = todoRepository;
+        this.userRepository = userRepository;
     }
 
     private void validateTodoFields(Todo todo){
@@ -37,6 +39,9 @@ public class TodoServiceImpl implements TodoService {
         }
         if (!Arrays.asList("Feature", "Story", "Bug", "Other").contains(todo.getType())) {
             throw new InvalidInputException("Invalid type");
+        }
+        if(todo.getAssignedTo() != null && !userRepository.existsById(todo.getAssignedTo())){
+            throw new InvalidInputException("Todo cannot be assigned to non-existing user");
         }
     }
 
@@ -69,6 +74,7 @@ public class TodoServiceImpl implements TodoService {
         existingTodo.setDescription(updatedTodo.getDescription());
         existingTodo.setType(updatedTodo.getType());
         existingTodo.setStatus(updatedTodo.getStatus());
+        existingTodo.setAssignedTo(updatedTodo.getAssignedTo());
 
         return todoRepository.save(existingTodo);
     }

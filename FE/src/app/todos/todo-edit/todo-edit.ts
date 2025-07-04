@@ -8,8 +8,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { TodoDataService } from '../todo-data-service';
+import { UserDataService } from '../../users/user-data-service';
 import { NotificationService } from '../../shared/notification';
 import { Todo } from '../../models/todo';
+import { User } from '../../models/user';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,14 +21,20 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import {
+  catchError,
   EMPTY,
   filter,
   finalize,
+  map,
+  Observable,
+  of,
+  startWith,
   Subject,
   switchMap,
   takeUntil,
   tap,
 } from 'rxjs';
+import { UsersViewModel } from '../../models/user-view-model';
 
 @Component({
   selector: 'app-todo-edit',
@@ -49,12 +57,14 @@ export class TodoEdit implements OnInit, OnDestroy {
   todo: Todo | undefined;
   destroy$ = new Subject<void>();
   isUpdating = false;
+  userVm$: Observable<UsersViewModel>;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private todoDataService: TodoDataService,
+    private userDataService: UserDataService,
     private notificationService: NotificationService
   ) {
     this.editTodoForm = this.formBuilder.group({
@@ -62,7 +72,32 @@ export class TodoEdit implements OnInit, OnDestroy {
       type: ['', Validators.required],
       status: ['', Validators.required],
       description: ['', [Validators.required, Validators.minLength(10)]],
+      assignedTo: [''],
     });
+
+    this.userVm$ = this.userDataService.getUsers().pipe(
+      map((users) => ({
+        users,
+        isLoading: false,
+        hasError: false,
+      })),
+      startWith({
+        users: [],
+        isLoading: true,
+        hasError: false,
+      }),
+      catchError(() => {
+        this.notificationService.showMessage(
+          'Failed to load users. Please try again later.'
+        );
+        return of({
+          users: [],
+          isLoading: false,
+          hasError: true,
+        });
+      }),
+      takeUntil(this.destroy$)
+    );
   }
 
   ngOnInit() {
@@ -92,6 +127,7 @@ export class TodoEdit implements OnInit, OnDestroy {
             title: this.todo.title,
             type: this.todo.type,
             status: this.todo.status,
+            assignedTo: this.todo.assignedTo || 'unassigned',
             description: this.todo.description,
           });
         },
@@ -118,6 +154,9 @@ export class TodoEdit implements OnInit, OnDestroy {
 
   onSubmit() {
     if (!this.editTodoForm.valid || !this.todo) return;
+    if (this.editTodoForm.value.assignedTo === 'unassigned') {
+      this.editTodoForm.value.assignedTo = null;
+    }
     const updatedTodo: Todo = {
       ...this.todo,
       ...this.editTodoForm.value,

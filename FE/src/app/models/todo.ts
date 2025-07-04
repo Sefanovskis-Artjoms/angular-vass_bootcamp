@@ -5,4 +5,5 @@ export interface Todo {
   type: 'Feature' | 'Bug' | 'Story' | 'Other';
   status: 'Todo' | 'In progress' | 'Done';
   createdOn: Date;
+  assignedTo: number | null;
 }

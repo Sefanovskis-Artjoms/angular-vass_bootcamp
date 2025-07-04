@@ -1,8 +1,10 @@
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TodoDataService } from '../todo-data-service';
+import { UserDataService } from '../../users/user-data-service';
 import { NotificationService } from '../../shared/notification';
 import { Todo } from '../../models/todo';
+import { User } from '../../models/user';
 import { Component, OnDestroy } from '@angular/core';
 import {
   catchError,
@@ -10,11 +12,11 @@ import {
   filter,
   finalize,
   Observable,
+  of,
   Subject,
   switchMap,
   takeUntil,
   tap,
-  throwError,
 } from 'rxjs';
 
 import { MatCardModule } from '@angular/material/card';
@@ -41,11 +43,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class TodoDetails implements OnDestroy {
   todo$: Observable<Todo>;
+  user$: Observable<User | null>;
   private destroy$ = new Subject<void>();
   isDeleting = false;
 
   constructor(
     private todoDataService: TodoDataService,
+    private userDataService: UserDataService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private notificationService: NotificationService
@@ -74,6 +78,22 @@ export class TodoDetails implements OnDestroy {
       }),
       filter((todo) => !!todo), // Comment for myself !! turns a value into a boolean, its just double ! operator
       // Another comment for myself: tap deals with side effects, while filter is to prevent issues whre undefined is passed to the template
+      takeUntil(this.destroy$)
+    );
+
+    this.user$ = this.todo$.pipe(
+      switchMap((todo) => {
+        if (!todo.assignedTo) return of(null);
+        return this.userDataService.getUserById(todo.assignedTo).pipe(
+          catchError(() => {
+            this.notificationService.showMessage(
+              'Failed to load assigned user details. Please try again later.'
+            );
+            this.router.navigate(['/todo-list']);
+            return EMPTY;
+          })
+        );
+      }),
       takeUntil(this.destroy$)
     );
   }

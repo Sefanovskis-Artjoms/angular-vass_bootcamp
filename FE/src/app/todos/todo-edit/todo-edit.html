@@ -6,7 +6,7 @@
   <form class="todo__form" [formGroup]="editTodoForm" (ngSubmit)="onSubmit()">
     <span class="todo__title mb-md">Edit todo</span>
 
-    <mat-form-field class="full-width">
+    <mat-form-field class="todo__inputfield-title">
       <mat-label>Title</mat-label>
       <input matInput type="text" formControlName="title" />
       <mat-error *ngIf="title?.invalid && (title?.dirty || title?.touched)">
@@ -17,36 +17,47 @@
       </mat-error>
     </mat-form-field>
 
-    <div class="todo__select-group">
-      <mat-form-field>
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="Todo">Todo</mat-option>
-          <mat-option value="In progress">In progress</mat-option>
-          <mat-option value="Done">Done</mat-option>
-        </mat-select>
-        <mat-error
-          *ngIf="status?.invalid && (status?.dirty || status?.touched)"
-        >
-          <span *ngIf="status?.errors?.['required']">
-            Status is required.
-          </span>
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="Todo">Todo</mat-option>
+        <mat-option value="In progress">In progress</mat-option>
+        <mat-option value="Done">Done</mat-option>
+      </mat-select>
+      <mat-error *ngIf="status?.invalid && (status?.dirty || status?.touched)">
+        <span *ngIf="status?.errors?.['required']"> Status is required. </span>
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Type</mat-label>
-        <mat-select formControlName="type">
-          <mat-option value="Feature">Feature</mat-option>
-          <mat-option value="Bug">Bug</mat-option>
-          <mat-option value="Story">Story</mat-option>
-          <mat-option value="Other">Other</mat-option>
-        </mat-select>
-        <mat-error *ngIf="type?.invalid && (type?.dirty || type?.touched)">
-          <span *ngIf="type?.errors?.['required']">Type is required.</span>
-        </mat-error>
-      </mat-form-field>
-    </div>
+    <mat-form-field *ngIf="userVm$ | async as userVm">
+      <mat-label>Assigned to</mat-label>
+      <mat-select formControlName="assignedTo">
+        <mat-option value="unassigned">Unassigned</mat-option>
+        <mat-option *ngIf="userVm.isLoading" disabled>
+          <div class="todo__form-option-with-spinner">
+            <mat-spinner [diameter]="15"></mat-spinner>Loading users
+          </div>
+        </mat-option>
+        <ng-container *ngIf="!userVm.isLoading && !userVm.hasError">
+          <mat-option *ngFor="let user of userVm.users" [value]="user.id">
+            {{ user.firstName }} {{ user.lastName }} ({{user.username}})
+          </mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option value="Feature">Feature</mat-option>
+        <mat-option value="Bug">Bug</mat-option>
+        <mat-option value="Story">Story</mat-option>
+        <mat-option value="Other">Other</mat-option>
+      </mat-select>
+      <mat-error *ngIf="type?.invalid && (type?.dirty || type?.touched)">
+        <span *ngIf="type?.errors?.['required']">Type is required.</span>
+      </mat-error>
+    </mat-form-field>
 
     <mat-form-field class="full-width todo__description">
       <mat-label>Description</mat-label>
@@ -62,19 +73,18 @@
         </span>
       </mat-error>
     </mat-form-field>
-    <div class="todo__actions">
-      <button
-        class="btn"
-        type="submit"
-        [disabled]="editTodoForm.invalid || isUpdating"
-      >
-        <mat-icon *ngIf="!isUpdating">check</mat-icon>
-        <mat-spinner *ngIf="isUpdating" [diameter]="15"></mat-spinner>
-        {{ isUpdating ? 'Updating' : 'Confirm' }}
-      </button>
-      <a class="btn" type="submit" [routerLink]="['/todo-details/'+ todo?.id]">
-        <mat-icon>close</mat-icon>Cancel
-      </a>
-    </div>
+
+    <button
+      class="btn btn--submit"
+      type="submit"
+      [disabled]="editTodoForm.invalid || isUpdating"
+    >
+      <mat-icon *ngIf="!isUpdating">check</mat-icon>
+      <mat-spinner *ngIf="isUpdating" [diameter]="15"></mat-spinner>
+      {{ isUpdating ? 'Updating' : 'Confirm' }}
+    </button>
+    <a class="btn" type="submit" [routerLink]="['/todo-details/'+ todo?.id]">
+      <mat-icon>close</mat-icon>Cancel
+    </a>
   </form>
 </div>
