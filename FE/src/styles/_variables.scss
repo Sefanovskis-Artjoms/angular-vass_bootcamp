@@ -1,1 +1,23 @@
-$color-test: red;
+:root {
+  --color-black: #130009;
+  --color-todo-status-todo: #ef9a9a;
+  --color-todo-status-inprogress: #fff176;
+  --color-todo-status-done: #81c784;
+  --color-todo-type-feature: #90caf9;
+  --color-todo-type-bug: #e57373;
+  --color-todo-type-story: #ce93d8;
+  --color-todo-type-other: #e0e0e0;
+
+  --border-regular: 0.3rem solid var(--color-black);
+
+  --border-shadow-regular: 0.3rem 0.3rem 0rem 0rem var(--color-black);
+  --border-shadow-regular--pressed: 0.3rem 0.3rem 0rem 0rem var(--color-black)
+    inset;
+
+  --border-shadow-large: 0.5rem 0.5rem 0rem 0rem var(--color-black);
+
+  --mat-form-field-filled-focus-active-indicator-height: 0.4rem;
+  --mat-form-field-container-height: 5.6rem;
+  --mat-form-field-filled-with-label-container-padding-top: 2.4rem;
+  --mat-form-field-filled-with-label-container-padding-bottom: 0.8rem;
+}

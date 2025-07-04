@@ -1,36 +1,79 @@
-/* You can add global styles to this file, and also import other style files */
 @use "@angular/material" as mat;
 @use "variables";
+@use "components";
+@use "mixins" as *;
 
-@include mat.core();
-
-@include mat.all-component-typographies();
-
-@import "@angular/material/prebuilt-themes/rose-red.css";
-
-html,
-body {
-  height: 100%;
-}
-body {
+* {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding: 0;
 }
 
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 html,
 body {
   height: 100%;
 }
+
 body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Work Sans", sans-serif;
+  font-size: var(--mat-sys-body-medium-size);
+  background-color: var(--mat-sys-background);
+}
+
+html {
+  font-size: 62.5%; // 1rem = 10px
+  color-scheme: light;
+  @include mat.theme(
+    (
+      color: mat.$rose-palette,
+      typography: Work Sans,
+    ),
+    $overrides: (
+      body-small-size: 1.2rem,
+      body-medium-size: 1.4rem,
+      body-large-size: 1.6rem,
+      display-small-size: 3.6rem,
+      display-medium-size: 4.5rem,
+      display-large-size: 5.6rem,
+      headline-small-size: 2.4rem,
+      headline-medium-size: 2.8rem,
+      headline-large-size: 3.2rem,
+      label-small-size: 1.1rem,
+      label-medium-size: 1.2rem,
+      label-large-size: 1.4rem,
+      title-small-size: 1.4rem,
+      title-medium-size: 1.6rem,
+      title-large-size: 2.2rem
+    )
+  );
+
+  @include respond(big-desktop) {
+    //width > 1800
+    font-size: 75%; // 1rem = 12px
+  }
+
+  @include respond(tab-land) {
+    // width < 1200
+    font-size: 56.25%; // 1rem = 9px
+  }
+
+  @include respond(tab-port) {
+    //width < 900
+    font-size: 50%; //1rem = 8px
+  }
+
+  @include respond(phone) {
+    // width < 600
+    font-size: 42.75%; // 1rem = 7px
+  }
+
+  @include respond(phone-sm) {
+    // width < 460
+    font-size: 31.25%; // 1rem = 7px
+  }
 }

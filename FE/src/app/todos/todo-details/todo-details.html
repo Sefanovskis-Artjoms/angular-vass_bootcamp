@@ -1,60 +1,45 @@
-<mat-card *ngIf="todo$ | async as todo" class="todo__card">
-  <mat-card-header>
-    <div class="todo__header">
-      <div>
-        <span class="mat-headline-5">{{todo.title}}</span>
-        <span class="mat-caption">, created on: {{todo.createdOn | date}}</span>
+<div *ngIf="todo$ | async as todo" class="todo__card">
+  <a class="btn btn--back mb-md" [routerLink]="['/todo-list']">
+    <mat-icon>arrow_back</mat-icon>
+    Back
+  </a>
+
+  <div class="todo__title mb-sm">{{todo.title}}</div>
+  <div class="todo__date mb-md">Created on: {{todo.createdOn | date}}</div>
+
+  <div class="todo__card-content mb-md">
+    <div>
+      <div class="todo__flag-container mb-xs">
+        <span>Status: </span>
+        <span class="todo__todo-flag" *ngIf="todo.status as status">
+          {{ todo.status }}
+        </span>
       </div>
-      <a matButton="outlined" [routerLink]="['/todo-list']">
-        <mat-icon>arrow_back</mat-icon>
-        Back
-      </a>
-    </div>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="todo__flag-container mat-body-1">
-      <span>Status: </span>
-      <span
-        class="todo__todo-flag"
-        *ngIf="todo.status as status"
-        [ngClass]="'todo__todo-flag--' + status.toLowerCase().replace(' ','')"
-        >{{ todo.status }}</span
-      >
+
+      <div class="todo__flag-container">
+        <span>Type: </span>
+        <span class="todo__todo-flag" *ngIf="todo.type as type">
+          {{ todo.type }}
+        </span>
+      </div>
     </div>
 
-    <div class="todo__flag-container mat-body-1">
-      <span>Type: </span>
-      <span
-        class="todo__todo-flag"
-        *ngIf="todo.type as type"
-        [ngClass]="'todo__todo-flag--' + type.toLowerCase()"
-        >{{ todo.type }}</span
-      >
-    </div>
+    <p class="todo__description">{{ todo.description }}</p>
+  </div>
 
-    <div class="todo__description mat-body-1">
-      <p>{{ todo.description }}</p>
-    </div>
-  </mat-card-content>
-  <mat-card-actions class="todo__actions">
-    <a
-      matButton="outlined"
-      type="submit"
-      [routerLink]="['/todo-edit/'+todo.id]"
-    >
+  <div class="todo__actions">
+    <a class="btn" type="submit" [routerLink]="['/todo-edit/'+todo.id]">
       <mat-icon>edit</mat-icon>Edit
     </a>
     <button
-      matButton="outlined"
+      class="btn"
       type="submit"
       (click)="handleDelete(todo.id)"
       [disabled]="isDeleting"
     >
-      <span class="todo__button-content">
-        <mat-icon *ngIf="!isDeleting">delete</mat-icon>
-        <mat-spinner *ngIf="isDeleting" [diameter]="15"></mat-spinner>
-        {{ isDeleting ? 'Deleting' : 'Delete' }}
-      </span>
+      <mat-icon *ngIf="!isDeleting">delete</mat-icon>
+      <mat-spinner *ngIf="isDeleting" [diameter]="15"></mat-spinner>
+      {{ isDeleting ? 'Deleting' : 'Delete' }}
     </button>
-  </mat-card-actions>
-</mat-card>
+  </div>
+</div>
