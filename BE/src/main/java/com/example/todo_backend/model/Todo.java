@@ -26,15 +26,19 @@ public class Todo {
     @CreationTimestamp
     private LocalDateTime createdOn;
 
+    @Column(name = "assigned_to")
+    private Long assignedTo;
+
     public Todo() {
     }
 
-    public Todo(String title, String description, String type, String status, LocalDateTime createdOn) {
+    public Todo(String title, String description, String type, String status, LocalDateTime createdOn, Long assignedTo) {
         this.title = title;
         this.description = description;
         this.type = type;
         this.status = status;
         this.createdOn = createdOn;
+        this.assignedTo = assignedTo;
     }
 
     public Long getId() {
@@ -83,5 +87,13 @@ public class Todo {
 
     public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public Long getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(Long assignedTo) {
+        this.assignedTo = assignedTo;
     }
 }

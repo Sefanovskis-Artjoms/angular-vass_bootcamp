@@ -38,9 +38,22 @@
   }
 
   &__form {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1.6rem;
+    padding-bottom: 1.6rem;
+
+    .todo__title,
+    .todo__description,
+    .todo__inputfield-title {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__form-option-with-spinner {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
   }
 
   &__description textarea {

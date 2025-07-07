@@ -8,19 +8,31 @@
   <div class="todo__date mb-md">Created on: {{todo.createdOn | date}}</div>
 
   <div class="todo__card-content mb-md">
-    <div>
-      <div class="todo__flag-container mb-xs">
+    <div class="todo__card-side-content">
+      <div>
         <span>Status: </span>
         <span class="todo__todo-flag" *ngIf="todo.status as status">
           {{ todo.status }}
         </span>
       </div>
 
-      <div class="todo__flag-container">
+      <div>
         <span>Type: </span>
         <span class="todo__todo-flag" *ngIf="todo.type as type">
           {{ todo.type }}
         </span>
+      </div>
+
+      <div>
+        <span>Assigned to: </span>
+        <ng-container *ngIf="user$ | async as user; else unassigned">
+          <span class="todo__assignedTo">
+            {{user.firstName}} {{user.lastName}} ({{user.username}})
+          </span>
+        </ng-container>
+        <ng-template #unassigned>
+          <span class="todo__assignedTo">Unassigned</span>
+        </ng-template>
       </div>
     </div>
 

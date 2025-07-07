@@ -1,16 +1,6 @@
 @use "todo-module" as *;
-@use "utilities" as *;
 
 .btn--submit {
+  grid-column: 1/-1;
   margin: 0 auto;
-}
-
-.todo {
-  &__select-group {
-    display: flex;
-    gap: 12px;
-    & > * {
-      flex: 1;
-    }
-  }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Todo } from '../models/todo';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,12 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class TodoDataService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   getTodos(): Observable<Todo[]> {
     return this.http.get<Todo[]>(environment.todoApiUrl);

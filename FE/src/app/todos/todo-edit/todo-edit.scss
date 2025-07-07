@@ -1,20 +1,5 @@
 @use "todo-module" as *;
-@use "utilities" as *;
 
-.todo {
-  &__select-group {
-    display: flex;
-    gap: 12px;
-    & > * {
-      flex: 1;
-    }
-  }
-
-  &__actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: -18px;
-    margin-bottom: 12px;
-  }
+.btn--submit {
+  margin-left: auto;
 }

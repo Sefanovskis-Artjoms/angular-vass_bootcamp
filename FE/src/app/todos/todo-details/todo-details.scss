@@ -20,13 +20,19 @@
     }
   }
 
-  &__flag-container {
+  &__card-side-content {
     font-size: var(--mat-sys-body-large-size);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
   }
 
   &__todo-flag {
     text-transform: uppercase;
     font-weight: 600;
+  }
+  &__assignedTo {
+    display: block;
   }
 
   &__description {

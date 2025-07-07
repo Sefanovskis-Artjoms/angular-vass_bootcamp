@@ -8,8 +8,18 @@ import {
 } from '@angular/forms';
 import { Todo } from '../../models/todo';
 import { TodoDataService } from '../todo-data-service';
-import { finalize, Subject, takeUntil } from 'rxjs';
-import { Component, OnDestroy } from '@angular/core';
+import { UserDataService } from '../../users/user-data-service';
+import {
+  catchError,
+  finalize,
+  map,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  takeUntil,
+} from 'rxjs';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { NotificationService } from '../../shared/notification';
 
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +28,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UsersViewModel } from '../../models/user-view-model';
 
 @Component({
   selector: 'app-todo-create',
@@ -36,23 +47,55 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './todo-create.scss',
 })
 export class TodoCreate implements OnDestroy {
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private todoDataService = inject(TodoDataService);
+  private userDataService = inject(UserDataService);
+  private notificationService = inject(NotificationService);
+
   createTodoForm: FormGroup;
   private destroy$ = new Subject<void>();
   isSubmitting = false;
+  userVm$: Observable<UsersViewModel>;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private todoDataService: TodoDataService,
-    private notificationService: NotificationService
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.createTodoForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],
       status: ['', Validators.required],
       description: ['', [Validators.required, Validators.minLength(10)]],
+      assignedTo: [''],
     });
+
+    this.userVm$ = this.userDataService.getUsers().pipe(
+      map((users) => ({
+        users,
+        isLoading: false,
+        hasError: false,
+      })),
+      startWith({
+        users: [],
+        isLoading: true,
+        hasError: false,
+      }),
+      catchError(() => {
+        this.notificationService.showMessage(
+          'Failed to load users. Please try again later.'
+        );
+        return of({
+          users: [],
+          isLoading: false,
+          hasError: true,
+        });
+      }),
+
+      takeUntil(this.destroy$)
+    );
   }
+
   get title() {
     return this.createTodoForm.get('title');
   }
@@ -67,6 +110,9 @@ export class TodoCreate implements OnDestroy {
   }
   onSubmit() {
     if (!this.createTodoForm.valid) return;
+    if (this.createTodoForm.value.assignedTo === 'unassigned') {
+      this.createTodoForm.value.assignedTo = null;
+    }
     const newTodo: Todo = {
       ...this.createTodoForm.value,
     };
